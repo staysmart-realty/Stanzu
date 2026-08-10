@@ -112,7 +112,7 @@
                         <span class="es-only">Llenar Formulario de Anuncio</span>
                         <span class="en-only">Fill Listing Form</span>
                     </button>
-                    <a href="https://paypal.me" target="_blank" rel="noopener" class="bg-blue-600/20 border border-blue-500 hover:bg-blue-600/30 text-blue-300 font-bold px-5 py-2.5 rounded-xl text-xs md:text-sm transition shadow-lg inline-flex items-center gap-2">
+                    <a href="https://paypal.me/AndresCollazos989" target="_blank" rel="noopener" class="bg-blue-600/20 border border-blue-500 hover:bg-blue-600/30 text-blue-300 font-bold px-5 py-2.5 rounded-xl text-xs md:text-sm transition shadow-lg inline-flex items-center gap-2">
                         <i class="fa-brands fa-paypal text-blue-400"></i>
                         <span class="es-only">Apoyar con Aporte Voluntario</span>
                         <span class="en-only">Support with Voluntary Donation</span>
@@ -136,6 +136,7 @@
                     </div>
 
                     <div id="gridPropiedadesPreview" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="btnVerMasContainer" class="text-center"></div>
 
                 </div>
             </div>
@@ -400,61 +401,125 @@
     </div>
 
     <script>
-        const demoPropiedades = [
-            { ciudad: "Santa Marta", sector: "Pozos Colorados", titulo_es: "Apartamento Frente al Mar", titulo_en: "Oceanfront Apartment", tipo_es: "Renta Turística", tipo_en: "Vacation Rental", precio: 380000, hab: 2, ban: 2, cap: 6, img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800" },
-            { ciudad: "Cartagena", sector: "Ciudad Amurallada", titulo_es: "Casa Colonial Exclusiva", titulo_en: "Exclusive Colonial House", tipo_es: "Venta", tipo_en: "For Sale", precio: 1200000000, hab: 4, ban: 4, cap: 0, img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800" },
-            { ciudad: "Medellín", sector: "El Poblado", titulo_es: "Penthouse de Lujo", titulo_en: "Luxury Penthouse", tipo_es: "Renta Turística", tipo_en: "Vacation Rental", precio: 650000, hab: 3, ban: 3, cap: 5, img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=800" },
-            { ciudad: "Bogotá", sector: "Chapinero Alto", titulo_es: "Estudio Moderno", titulo_en: "Modern Studio", tipo_es: "Venta", tipo_en: "For Sale", precio: 350000000, hab: 1, ban: 1, cap: 0, img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800" },
-            { ciudad: "Guatapé", sector: "Malecón", titulo_es: "Cabaña Vista Represa", titulo_en: "Lake View Cabin", tipo_es: "Renta Turística", tipo_en: "Vacation Rental", precio: 450000, hab: 4, ban: 2, cap: 10, img: "https://images.unsplash.com/photo-1587061949409-02df41d5e562?q=80&w=800" },
-            { ciudad: "Santa Marta", sector: "El Rodadero", titulo_es: "Apartamento Vista Panorámica", titulo_en: "Panoramic View Condo", tipo_es: "Venta", tipo_en: "For Sale", precio: 410000000, hab: 2, ban: 2, cap: 0, img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800" }
-        ];
+        // --- Conexión a Airtable (solo lectura) ---
+        const AIRTABLE_BASE_ID = 'appOq20P1k1DXXpAm';
+        const AIRTABLE_TABLE_ID = 'tblDOfSEUY7ruAT9b';
+        const AIRTABLE_TOKEN = 'patZFOwKTZ84Bqpbj.6399479788bbf78a0ab7057ddb0f127761a91cc87141c7ee1be3b7300c9693a3';
+
+        const TRADUCCION_TIPO = {
+            'Venta': 'For Sale',
+            'Venta o Permuta': 'For Sale / Trade',
+            'Renta Largo Plazo': 'Long Term Rental',
+            'Renta Turistica': 'Vacation Rental'
+        };
 
         let idiomaActual = 'es';
+        let propiedadesReales = [];
+        let mostrandoTodas = false;
+
+        async function cargarPropiedades() {
+            const container = document.getElementById('gridPropiedadesPreview');
+            container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-8">Cargando propiedades...</p>';
+
+            try {
+                const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula={Estado}='Disponible'&sort[0][field]=Hora de Creacion&sort[0][direction]=desc`;
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` }
+                });
+
+                if (!res.ok) throw new Error('Error al cargar: ' + res.status);
+
+                const data = await res.json();
+                propiedadesReales = data.records.map(r => r.fields);
+                renderizarGridPreview();
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-8">No se pudieron cargar las propiedades. Intenta de nuevo más tarde.</p>';
+            }
+        }
 
         function renderizarGridPreview() {
             const container = document.getElementById('gridPropiedadesPreview');
+            const btnContainer = document.getElementById('btnVerMasContainer');
             let html = '';
-            
-            demoPropiedades.forEach(prop => {
-                const titulo = idiomaActual === 'es' ? prop.titulo_es : prop.titulo_en;
-                const tipo = idiomaActual === 'es' ? prop.tipo_es : prop.tipo_en;
-                const esTurismo = prop.tipo_es === 'Renta Turística';
-                
-                let precioBase = prop.precio;
-                let sufijo = esTurismo ? (idiomaActual === 'es' ? '/ noche' : '/ night') : '';
-                let textoPrecio = '';
 
-                if(idiomaActual === 'en') {
+            if (propiedadesReales.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-8">Aún no hay propiedades publicadas.</p>';
+                if (btnContainer) btnContainer.innerHTML = '';
+                return;
+            }
+
+            const limite = mostrandoTodas ? 9 : 6;
+            const propiedadesAMostrar = propiedadesReales.slice(0, limite);
+
+            propiedadesAMostrar.forEach((prop, index) => {
+                const titulo = prop['Titulo'] || '';
+                const tipoEs = prop['Tipo de Oferta'] || '';
+                const tipo = idiomaActual === 'es' ? tipoEs : (TRADUCCION_TIPO[tipoEs] || tipoEs);
+                const esTurismo = tipoEs === 'Renta Turistica' || tipoEs === 'Renta Turística';
+
+                const precioBase = prop['Precio'] || 0;
+                const sufijo = esTurismo ? (idiomaActual === 'es' ? '/ noche' : '/ night') : '';
+                let textoPrecio = '';
+                if (idiomaActual === 'en') {
                     textoPrecio = '$' + Math.round(precioBase / 4000).toLocaleString('en-US') + ' USD ' + sufijo;
                 } else {
                     textoPrecio = '$' + precioBase.toLocaleString('es-CO') + ' COP ' + sufijo;
                 }
 
+                const fotos = prop['Fotos_url'] || [];
+                const img = fotos.length > 0 ? fotos[0].url : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800';
+
+                const descripcion = prop['Descripcion'] || '';
+                const contactoNombre = prop['Contacto Nombre'] || '';
+                const contactoTel = prop['WhatsApp o Telefono'] || '';
+                const cardId = `card-${index}`;
+
                 html += `
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group cursor-pointer" onclick="expandirTarjeta('${cardId}')">
                     <div class="relative h-44 bg-slate-800 overflow-hidden">
-                        <img src="${prop.img}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <img src="${img}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-2.5 py-1 rounded text-[10px] font-bold uppercase text-blue-400">
                             ${tipo}
                         </div>
                     </div>
                     <div class="p-5">
-                        <div class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">${prop.ciudad} · ${prop.sector}</div>
+                        <div class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">${prop['Ciudad'] || ''} · ${prop['Sector'] || ''}</div>
                         <h4 class="text-base font-bold text-white mb-3 truncate">${titulo}</h4>
-                        
+
                         <div class="flex items-center gap-4 text-xs text-slate-400 mb-4 pb-4 border-b border-slate-800">
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-slate-500"></i> ${prop.hab}</span>
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-slate-500"></i> ${prop.ban}</span>
-                            ${esTurismo ? `<span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-slate-500"></i> ${prop.cap}</span>` : ''}
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-slate-500"></i> ${prop['Habitaciones'] || 0}</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-slate-500"></i> ${prop['Banos'] || 0}</span>
                         </div>
-                        
-                        <div class="text-lg font-black text-emerald-400">${textoPrecio}</div>
+
+                        <div class="text-lg font-black text-emerald-400 mb-3">${textoPrecio}</div>
+
+                        <div id="${cardId}" class="hidden pt-3 border-t border-slate-800 text-sm text-slate-300 space-y-2">
+                            <p>${descripcion}</p>
+                            <p class="text-slate-400"><i class="fa-solid fa-user mr-1.5"></i>${contactoNombre}</p>
+                            <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-semibold">
+                                <i class="fa-brands fa-whatsapp"></i> ${contactoTel}
+                            </a>
+                        </div>
                     </div>
                 </div>
                 `;
             });
-            
+
             container.innerHTML = html;
+
+            if (btnContainer) {
+                if (!mostrandoTodas && propiedadesReales.length > 6) {
+                    btnContainer.innerHTML = `<button onclick="mostrandoTodas = true; renderizarGridPreview();" class="mt-6 px-6 py-2.5 border border-blue-500/50 text-blue-400 rounded-lg text-sm font-semibold hover:bg-blue-500/10 transition">Ver más</button>`;
+                } else {
+                    btnContainer.innerHTML = '';
+                }
+            }
+        }
+
+        function expandirTarjeta(cardId) {
+            const el = document.getElementById(cardId);
+            if (el) el.classList.toggle('hidden');
         }
 
         function cambiarIdiomaMoneda(val) {
@@ -463,6 +528,9 @@
             document.body.classList.add('lang-' + val);
             renderizarGridPreview();
         }
+
+        // Refresca desde Airtable cada 2 minutos por si hay publicaciones nuevas
+        setInterval(cargarPropiedades, 120000);
 
         function conmutarServicioViaje(opcion) {
             const paneles = ['hoteles', 'vuelos', 'gocity', 'kkday', 'klook', 'autos'];
@@ -488,7 +556,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const yearEl = document.getElementById('footerYear');
             if (yearEl) yearEl.textContent = new Date().getFullYear();
-            renderizarGridPreview();
+            cargarPropiedades();
         });
     </script>
 </body>
