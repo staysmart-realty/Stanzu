@@ -22,12 +22,17 @@
         
         .no-copy { user-select: none; }
         .card-glow:hover { box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.4); transform: translateY(-3px); }
+        
+        /* Scrollbar personalizado para las fotos múltiples */
+        .custom-scroll::-webkit-scrollbar { height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col no-copy lang-es">
 
     <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md text-white border-b border-slate-800">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
             <a href="#hero" class="flex items-center gap-3">
                 <div class="flex items-center gap-2.5 bg-gradient-to-r from-blue-600/30 to-teal-500/30 border border-blue-500/50 px-3.5 py-2 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                     <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-teal-400 flex items-center justify-center shadow-inner">
@@ -50,7 +55,7 @@
             </nav>
 
             <div class="flex items-center gap-3 text-xs font-semibold">
-                <select id="langSelect" onchange="cambiarIdiomaMoneda(this.value)" class="bg-slate-800 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                <select id="langSelect" onchange="cambiarIdiomaMoneda(this.value)" class="bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none cursor-pointer">
                     <option value="es">ES (COP)</option>
                     <option value="en">EN (USD)</option>
                 </select>
@@ -58,15 +63,15 @@
         </div>
     </header>
 
-    <section id="hero" class="hero-bg pt-12 pb-16 md:pt-16 md:pb-20 px-4 relative flex items-center">
+    <section id="hero" class="hero-bg pt-12 pb-16 md:pt-20 md:pb-24 px-4 relative flex items-center">
         <div class="max-w-4xl mx-auto text-center space-y-6">
-            <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/40 px-4 py-1.5 rounded-full text-blue-200 text-[10px] md:text-xs font-semibold uppercase tracking-wider backdrop-blur-sm">
+            <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/40 px-4 py-1.5 rounded-full text-blue-200 text-xs md:text-sm font-semibold uppercase tracking-wider backdrop-blur-sm">
                 <i class="fa-solid fa-house-signal text-blue-400"></i>
-                <span class="es-only">Publicación por solo $3 USD</span>
-                <span class="en-only">Listing for only $3 USD</span>
+                <span class="es-only">Publicación activa por solo $3 USD</span>
+                <span class="en-only">Active listing for only $3 USD</span>
             </div>
             
-            <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white drop-shadow-md">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white drop-shadow-md">
                 <span class="text-white">STANZU</span> <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-teal-300 to-emerald-400">
                     <span class="es-only">Conecta, Vende y Renta Seguro</span>
@@ -74,13 +79,13 @@
                 </span>
             </h1>
             
-            <p class="text-slate-200 max-w-2xl mx-auto text-sm md:text-base leading-relaxed drop-shadow font-medium">
-                <span class="es-only">Anuncia tu propiedad turística, casa o apartamento sin intermediarios costosos. Publicación activa por solo $3 USD.</span>
-                <span class="en-only">List your tourist property, house or apartment without expensive intermediaries. Active listing for only $3 USD.</span>
+            <p class="text-slate-200 max-w-2xl mx-auto text-base md:text-lg leading-relaxed drop-shadow font-medium">
+                <span class="es-only">Anuncia tu propiedad turística, casa o apartamento sin intermediarios. Sube hasta 20 fotos por solo $3 USD.</span>
+                <span class="en-only">List your tourist property, house or apartment without intermediaries. Upload up to 20 photos for only $3 USD.</span>
             </p>
             
             <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 items-center">
-                <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white font-bold px-8 py-3.5 rounded-xl text-sm md:text-base transition shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center gap-2 cursor-pointer">
+                <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white font-bold px-8 py-4 rounded-xl text-base md:text-lg transition shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center gap-2.5 cursor-pointer">
                     <i class="fa-solid fa-cloud-arrow-up"></i> 
                     <span class="es-only">Publicar mi Inmueble ($3 USD)</span>
                     <span class="en-only">Publish My Property ($3 USD)</span>
@@ -93,21 +98,21 @@
         <div class="max-w-6xl mx-auto">
             
             <div class="text-center space-y-4 mb-12">
-                <h2 class="text-3xl font-black text-white">
-                    <span class="es-only">Anuncia tu propiedad al mundo por solo $3 USD</span>
-                    <span class="en-only">List your property to the world for only $3 USD</span>
+                <h2 class="text-3xl md:text-4xl font-black text-white">
+                    <span class="es-only">Catálogo y Publicación de Inmuebles</span>
+                    <span class="en-only">Property Catalog & Listings</span>
                 </h2>
-                <p class="text-slate-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
-                    <span class="es-only">Completa tu formulario y realiza tu pago de $3 USD vía PayPal. Así se visualizan los inmuebles en el catálogo:</span>
-                    <span class="en-only">Fill out your form and pay $3 USD via PayPal. This is how properties appear in the catalog:</span>
+                <p class="text-slate-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                    <span class="es-only">Carga hasta 20 fotografías detalladas de tu inmueble por solo $3 USD vía PayPal. Explora el catálogo activo:</span>
+                    <span class="en-only">Upload up to 20 detailed photos of your property for only $3 USD via PayPal. Explore the active catalog:</span>
                 </p>
                 <div class="pt-2 flex flex-wrap justify-center gap-4">
-                     <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-slate-900 border border-blue-500/50 hover:border-blue-400 text-white font-bold px-6 py-2.5 rounded-xl text-xs md:text-sm transition shadow-lg inline-flex items-center gap-2 cursor-pointer">
+                     <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-slate-900 border border-blue-500/50 hover:border-blue-400 text-white font-bold px-6 py-3 rounded-xl text-sm md:text-base transition shadow-lg inline-flex items-center gap-2 cursor-pointer">
                         <i class="fa-solid fa-file-pen text-blue-400"></i> 
                         <span class="es-only">Llenar Formulario de Anuncio</span>
                         <span class="en-only">Fill Listing Form</span>
                     </button>
-                    <a href="https://paypal.me/AndresCollazos989" target="_blank" rel="noopener" class="bg-blue-600/20 border border-blue-500 hover:bg-blue-600/30 text-blue-300 font-bold px-5 py-2.5 rounded-xl text-xs md:text-sm transition shadow-lg inline-flex items-center gap-2">
+                    <a href="https://paypal.me/AndresCollazos989" target="_blank" rel="noopener" class="bg-blue-600/20 border border-blue-500 hover:bg-blue-600/30 text-blue-300 font-bold px-6 py-3 rounded-xl text-sm md:text-base transition shadow-lg inline-flex items-center gap-2">
                         <i class="fa-brands fa-paypal text-blue-400"></i>
                         <span>Pagar $3 USD (PayPal)</span>
                     </a>
@@ -119,18 +124,18 @@
                 <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-10 shadow-2xl">
                     
                     <div class="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
-                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <h3 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2.5">
                             <i class="fa-solid fa-images text-teal-400"></i>
-                            <span class="es-only">Catálogo de Propiedades</span>
-                            <span class="en-only">Property Catalog</span>
+                            <span class="es-only">Propiedades Disponibles</span>
+                            <span class="en-only">Available Properties</span>
                         </h3>
-                        <span class="bg-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1 rounded-full border border-blue-500/30">
+                        <span class="bg-blue-500/20 text-blue-400 text-xs font-bold px-3.5 py-1 rounded-full border border-blue-500/30">
                             <span class="es-only">Activo</span><span class="en-only">Active</span>
                         </span>
                     </div>
 
                     <div id="gridPropiedadesPreview" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                    <div id="btnVerMasContainer" class="text-center mt-6"></div>
+                    <div id="btnVerMasContainer" class="text-center mt-8"></div>
 
                 </div>
             </div>
@@ -141,69 +146,69 @@
     <section id="seguridad" class="bg-slate-900 py-16 px-4 border-t border-b border-slate-800">
         <div class="max-w-4xl mx-auto space-y-8">
             <div class="text-center space-y-3">
-                <div class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 px-4 py-1.5 rounded-full text-amber-300 text-xs font-bold uppercase tracking-wider">
+                <div class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 px-4 py-1.5 rounded-full text-amber-300 text-xs md:text-sm font-bold uppercase tracking-wider">
                     <i class="fa-solid fa-shield-halved text-amber-400"></i>
                     <span class="es-only">Prevención de Fraudes y Guía Legal</span>
                     <span class="en-only">Fraud Prevention & Legal Guide</span>
                 </div>
-                <h2 class="text-3xl font-black text-white">
+                <h2 class="text-3xl md:text-4xl font-black text-white">
                     <span class="es-only">Tu seguridad financiera y patrimonial es primero</span>
                     <span class="en-only">Your financial and asset security comes first</span>
                 </h2>
-                <p class="text-slate-400 text-sm">
+                <p class="text-slate-300 text-base">
                     <span class="es-only">Recomendaciones indispensables para negociar con tranquilidad en entornos digitales.</span>
                     <span class="en-only">Essential recommendations for safe trading in digital environments.</span>
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6 text-sm text-slate-300">
-                <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-3">
-                    <div class="flex items-center gap-3 text-amber-400 font-bold text-base">
-                        <i class="fa-solid fa-user-secret text-lg"></i>
+            <div class="grid md:grid-cols-2 gap-6 text-slate-300">
+                <div class="bg-slate-950 border border-slate-800 p-6 md:p-8 rounded-2xl space-y-3">
+                    <div class="flex items-center gap-3 text-amber-400 font-bold text-lg">
+                        <i class="fa-solid fa-user-secret"></i>
                         <span>Ciberseguridad y Datos Personales</span>
                     </div>
-                    <p class="leading-relaxed text-slate-400">
-                        Las redes y plataformas digitales son escenarios donde operan los amigos de lo ajeno para procesar robos de datos e información bancaria. <strong>Nunca suministres toda tu información confidencial</strong> a posibles clientes sin antes verificar sus intenciones reales. Prevé cualquier situación que pueda poner en riesgo tu estabilidad financiera o tu seguridad personal.
+                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                        Las plataformas digitales son escenarios donde operan personas inescrupulosas. <strong>Nunca suministres toda tu información confidencial</strong> a posibles clientes sin antes verificar sus intenciones reales. Prevé cualquier situación que pueda poner en riesgo tu estabilidad financiera.
                     </p>
                 </div>
 
-                <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-3">
-                    <div class="flex items-center gap-3 text-blue-400 font-bold text-base">
-                        <i class="fa-solid fa-landmark text-lg"></i>
+                <div class="bg-slate-950 border border-slate-800 p-6 md:p-8 rounded-2xl space-y-3">
+                    <div class="flex items-center gap-3 text-blue-400 font-bold text-lg">
+                        <i class="fa-solid fa-landmark"></i>
                         <span>Contratos y Notarías</span>
                     </div>
-                    <p class="leading-relaxed text-slate-400">
-                        Procura que todos tus negocios, ya sean de venta, renta a largo plazo o renta turística, tengan un contrato formal de respaldo. Además, haz siempre los trámites definitivos en <strong>notarías</strong> o instituciones clave que te garantizan seguridad jurídica en tus transacciones inmobiliarias.
+                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                        Procura que todos tus negocios, ya sean de venta, renta a largo plazo o turística, tengan un contrato formal de respaldo. Realiza los trámites definitivos en <strong>notarías</strong> o instituciones autorizadas que garanticen seguridad jurídica.
                     </p>
                 </div>
 
-                <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-3">
-                    <div class="flex items-center gap-3 text-emerald-400 font-bold text-base">
-                        <i class="fa-solid fa-file-contract text-lg"></i>
+                <div class="bg-slate-950 border border-slate-800 p-6 md:p-8 rounded-2xl space-y-3">
+                    <div class="flex items-center gap-3 text-emerald-400 font-bold text-lg">
+                        <i class="fa-solid fa-file-contract"></i>
                         <span>Seguro de Impago (Largo Plazo)</span>
                     </div>
-                    <p class="leading-relaxed text-slate-400">
-                        Para arrendamientos residenciales o comerciales <strong>es indispensable incluir un seguro por impago</strong>. Puedes incluir este valor dentro de la tarifa mensual del canon para garantizar protección total ante cualquier afectación económica.
+                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                        Para arrendamientos residenciales o comerciales <strong>es altamente recomendable incluir un seguro por impago</strong>. Puedes proyectar este valor dentro de la tarifa mensual para asegurar protección económica total.
                     </p>
                 </div>
 
-                <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-3">
-                    <div class="flex items-center gap-3 text-teal-400 font-bold text-base">
-                        <i class="fa-solid fa-umbrella-beach text-lg"></i>
+                <div class="bg-slate-950 border border-slate-800 p-6 md:p-8 rounded-2xl space-y-3">
+                    <div class="flex items-center gap-3 text-teal-400 font-bold text-lg">
+                        <i class="fa-solid fa-umbrella-beach"></i>
                         <span>Seguros y Depósitos (Turismo)</span>
                     </div>
-                    <p class="leading-relaxed text-slate-400">
-                        En el alquiler vacacional o turístico, es estrictamente necesario que exijas un <strong>seguro por daños y pérdidas</strong> en la propiedad, acompañado de un <strong>depósito de garantía</strong> antes de entregar las llaves.
+                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                        En el alquiler vacacional, exige siempre un <strong>seguro por daños y pérdidas</strong> en el inmueble, acompañado de un <strong>depósito de garantía</strong> reembolsable antes de entregar las llaves de la propiedad.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-slate-950 border-t border-slate-900 py-10 px-4 text-xs text-slate-500">
+    <footer class="bg-slate-950 border-t border-slate-900 py-10 px-4 text-xs md:text-sm text-slate-400">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
             <div>
-                <p class="text-white font-black text-lg mb-1">STANZU</p>
+                <p class="text-white font-black text-xl mb-1">STANZU</p>
                 <p class="text-slate-400">&copy; <span id="footerYear">2026</span> Stanzu. <span class="es-only">Todos los derechos reservados.</span><span class="en-only">All rights reserved.</span></p>
             </div>
 
@@ -237,7 +242,7 @@
 
         async function cargarPropiedades() {
             const container = document.getElementById('gridPropiedadesPreview');
-            container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-8">Cargando propiedades...</p>';
+            container.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8 text-sm">Cargando propiedades...</p>';
 
             try {
                 const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula={Estado}='Disponible'&sort[0][field]=Hora de Creacion&sort[0][direction]=desc`;
@@ -252,7 +257,7 @@
                 renderizarGridPreview();
             } catch (err) {
                 console.error(err);
-                container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-8">No se pudieron cargar las propiedades. Intenta de nuevo más tarde.</p>';
+                container.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8 text-sm">No se pudieron cargar las propiedades. Intenta de nuevo más tarde.</p>';
             }
         }
 
@@ -262,7 +267,7 @@
             let html = '';
 
             if (propiedadesReales.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-8">Aún no hay propiedades publicadas.</p>';
+                container.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8 text-sm">Aún no hay propiedades publicadas.</p>';
                 if (btnContainer) btnContainer.innerHTML = '';
                 return;
             }
@@ -297,58 +302,73 @@
 
                 const cardId = `card-${index}`;
 
+                // SECCIÓN DE FOTOS MÚLTIPLES (Soporta hasta 20 fotos con scroll horizontal fluido)
                 let miniaturasHtml = '';
                 if (fotos.length > 0) {
-                    miniaturasHtml = `<div class="flex gap-2 overflow-x-auto pb-2">` +
-                        fotos.map(f => `<img src="${f.url}" class="w-20 h-20 object-cover rounded-lg border border-slate-700 flex-shrink-0 shadow-sm" onclick="event.stopPropagation()">`).join('') +
-                        `</div>`;
+                    miniaturasHtml = `
+                    <div class="space-y-1.5">
+                        <div class="text-[11px] font-bold text-teal-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${fotos.length}/20)</span><span class="en-only">Photo gallery (${fotos.length}/20)</span></span>
+                        </div>
+                        <div class="flex gap-2 overflow-x-auto py-2 custom-scroll">` +
+                        fotos.map((f, fIdx) => `
+                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick="cambiarFotoPrincipal('${cardId}', '${f.url}')">
+                                <img src="${f.url}" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-300">
+                                <span class="absolute bottom-1 right-1 bg-slate-900/80 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">${fIdx + 1}</span>
+                            </div>
+                        `).join('') +
+                        `</div>
+                    </div>`;
                 }
 
                 html += `
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group flex flex-col justify-between">
                     <div>
-                        <div class="relative h-48 bg-slate-800 overflow-hidden cursor-pointer" onclick="expandirTarjeta('${cardId}')">
-                            <img src="${imgPrincipal}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-2.5 py-1 rounded text-[10px] font-bold uppercase text-blue-400">
+                        <div class="relative h-56 bg-slate-800 overflow-hidden cursor-pointer" onclick="expandirTarjeta('${cardId}')">
+                            <img id="${cardId}-main-img" src="${imgPrincipal}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-3 py-1 rounded-lg text-xs font-bold uppercase text-blue-400 shadow-md">
                                 ${tipo}
                             </div>
-                            ${fotos.length > 1 ? `<div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold text-white flex items-center gap-1"><i class="fa-solid fa-images"></i> ${fotos.length}</div>` : ''}
+                            ${fotos.length > 0 ? `<div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 shadow-md"><i class="fa-solid fa-camera"></i> ${fotos.length} fotos</div>` : ''}
                         </div>
-                        <div class="p-5">
-                            <div class="text-[10px] text-blue-400 font-bold uppercase tracking-wider mb-1">
+                        
+                        <div class="p-6">
+                            <div class="text-xs text-blue-400 font-bold uppercase tracking-wider mb-1.5">
                                 <i class="fa-solid fa-location-dot mr-1"></i>${ciudad}${sector ? ' · ' + sector : ''}
                             </div>
-                            <h4 class="text-base font-bold text-white mb-1 cursor-pointer" onclick="expandirTarjeta('${cardId}')">${titulo}</h4>
-                            ${tipoInmueble ? `<div class="text-xs text-slate-400 mb-3">${tipoInmueble}</div>` : '<div class="mb-3"></div>'}
+                            <h4 class="text-lg font-bold text-white mb-2 cursor-pointer hover:text-blue-300 transition" onclick="expandirTarjeta('${cardId}')">${titulo}</h4>
+                            ${tipoInmueble ? `<div class="text-xs md:text-sm text-slate-300 mb-4 bg-slate-900/60 inline-block px-2.5 py-1 rounded-md border border-slate-800">${tipoInmueble}</div>` : '<div class="mb-4"></div>'}
 
-                            <div class="flex items-center gap-4 text-xs text-slate-400 mb-4 pb-4 border-b border-slate-800">
-                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bed text-slate-500"></i> ${habitaciones} <span class="es-only">hab.</span><span class="en-only">bd</span></span>
-                                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bath text-slate-500"></i> ${banos} <span class="es-only">baños</span><span class="en-only">ba</span></span>
+                            <div class="flex items-center gap-5 text-sm text-slate-300 mb-4 pb-4 border-b border-slate-800">
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-bed text-blue-400"></i> ${habitaciones} <span class="es-only">hab.</span><span class="en-only">beds</span></span>
+                                <span class="flex items-center gap-2"><i class="fa-solid fa-bath text-teal-400"></i> ${banos} <span class="es-only">baños</span><span class="en-only">baths</span></span>
                             </div>
 
-                            <div class="flex items-center justify-between mb-1">
-                                <div class="text-lg font-black text-emerald-400">${textoPrecio}</div>
-                                <button onclick="expandirTarjeta('${cardId}')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer">
-                                    <span class="es-only">Ver detalles completos</span><span class="en-only">View full details</span>
-                                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-xl font-black text-emerald-400">${textoPrecio}</div>
+                                <button onclick="expandirTarjeta('${cardId}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5 cursor-pointer bg-blue-950/40 px-3 py-1.5 rounded-lg border border-blue-500/30 transition">
+                                    <span class="es-only">Ver detalles</span><span class="en-only">View details</span>
+                                    <i class="fa-solid fa-chevron-down text-[10px]" id="${cardId}-icon"></i>
                                 </button>
                             </div>
 
-                            <div id="${cardId}" class="hidden mt-4 pt-4 border-t border-slate-800 text-sm text-slate-300 space-y-4">
+                            <div id="${cardId}" class="hidden mt-4 pt-4 border-t border-slate-800 text-sm text-slate-200 space-y-4">
                                 ${miniaturasHtml}
-                                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800/80">
-                                    <div class="text-[10px] font-bold uppercase text-blue-400 mb-1.5 flex items-center gap-1.5">
+                                
+                                <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+                                    <div class="text-xs font-bold uppercase text-blue-400 mb-2 flex items-center gap-2">
                                         <i class="fa-solid fa-align-left"></i> <span class="es-only">Descripción completa</span><span class="en-only">Full Description</span>
                                     </div>
-                                    <p class="leading-relaxed text-slate-300 text-xs md:text-sm whitespace-pre-line break-words">${descripcion}</p>
+                                    <p class="leading-relaxed text-slate-200 text-sm md:text-base whitespace-pre-line break-words">${descripcion}</p>
                                 </div>
-                                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-2">
-                                    <div class="text-[10px] font-bold uppercase text-slate-500">
-                                        <span class="es-only">Contacto Directo</span><span class="en-only">Direct Contact</span>
+                                
+                                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2.5">
+                                    <div class="text-xs font-bold uppercase text-slate-400">
+                                        <span class="es-only">Contacto Directo del Anunciante</span><span class="en-only">Direct Advertiser Contact</span>
                                     </div>
-                                    <p class="text-slate-200 text-xs font-semibold"><i class="fa-solid fa-user mr-1.5 text-slate-400"></i>${contactoNombre}</p>
-                                    <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-xs bg-emerald-950/40 border border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-900/40 transition">
-                                        <i class="fa-brands fa-whatsapp text-sm"></i> ${contactoTel}
+                                    <p class="text-white text-sm font-semibold"><i class="fa-solid fa-user mr-2 text-blue-400"></i>${contactoNombre}</p>
+                                    <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-xs md:text-sm bg-emerald-950/50 border border-emerald-500/40 px-3.5 py-2 rounded-xl hover:bg-emerald-900/40 transition shadow">
+                                        <i class="fa-brands fa-whatsapp text-base"></i> ${contactoTel}
                                     </a>
                                 </div>
                             </div>
@@ -362,7 +382,7 @@
 
             if (btnContainer) {
                 if (propiedadesReales.length > itemsVisibles) {
-                    btnContainer.innerHTML = `<button onclick="itemsVisibles += ITEMS_POR_VISTA; renderizarGridPreview();" class="mt-6 px-6 py-2.5 border border-blue-500/50 text-blue-400 rounded-lg text-sm font-semibold hover:bg-blue-500/10 transition cursor-pointer"><span class="es-only">Ver más propiedades</span><span class="en-only">Show more properties</span></button>`;
+                    btnContainer.innerHTML = `<button onclick="itemsVisibles += ITEMS_POR_VISTA; renderizarGridPreview();" class="px-8 py-3.5 border border-blue-500/50 text-blue-400 rounded-xl text-sm md:text-base font-semibold hover:bg-blue-500/10 transition cursor-pointer"><span class="es-only">Ver más propiedades</span><span class="en-only">Show more properties</span></button>`;
                 } else {
                     btnContainer.innerHTML = '';
                 }
@@ -372,6 +392,13 @@
         function expandirTarjeta(cardId) {
             const el = document.getElementById(cardId);
             if (el) el.classList.toggle('hidden');
+        }
+
+        function cambiarFotoPrincipal(cardId, urlFoto) {
+            const imgMain = document.getElementById(cardId + '-main-img');
+            if (imgMain) {
+                imgMain.src = urlFoto;
+            }
         }
 
         function cambiarIdiomaMoneda(val) {
