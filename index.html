@@ -23,7 +23,6 @@
         .no-copy { user-select: none; }
         .card-glow:hover { box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.4); transform: translateY(-3px); }
         
-        /* Scrollbar personalizado para las fotos múltiples */
         .custom-scroll::-webkit-scrollbar { height: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
@@ -261,6 +260,26 @@
             }
         }
 
+        // Función inteligente para interpretar fotos tanto si vienen como Array, JSON de texto o URLs directas
+        function obtenerFotosArray(rawFotos) {
+            if (!rawFotos) return [];
+            if (Array.isArray(rawFotos)) {
+                return rawFotos.map(item => typeof item === 'object' && item.url ? item.url : item);
+            }
+            if (typeof rawFotos === 'string') {
+                try {
+                    const parsed = JSON.parse(rawFotos);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(item => typeof item === 'object' && item.url ? item.url : item);
+                    }
+                } catch (e) {
+                    // Si es texto plano separado por comas o una sola URL
+                    return rawFotos.split(',').map(s => s.trim()).filter(Boolean);
+                }
+            }
+            return [];
+        }
+
         function renderizarGridPreview() {
             const container = document.getElementById('gridPropiedadesPreview');
             const btnContainer = document.getElementById('btnVerMasContainer');
@@ -286,11 +305,14 @@
                 const habitaciones = prop['Habitaciones'] || 0;
                 const banos = prop['Banos'] || 0;
                 const descripcion = prop['Descripcion'] || (idiomaActual === 'es' ? 'Sin descripción disponible.' : 'No description available.');
-                const fotos = prop['Fotos_url'] || [];
+                
+                // Procesamos las fotos de manera segura con nuestra nueva función robusta
+                const urlsFotos = obtenerFotosArray(prop['Fotos_url']);
+                
                 const contactoNombre = prop['Contacto Nombre'] || '';
                 const contactoTel = prop['WhatsApp o Telefono'] || '';
 
-                const imgPrincipal = fotos.length > 0 ? fotos[0].url : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800';
+                const imgPrincipal = urlsFotos.length > 0 ? urlsFotos[0] : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800';
 
                 const sufijo = esTurismo ? (idiomaActual === 'es' ? ' / noche' : ' / night') : '';
                 let textoPrecio = '';
@@ -302,18 +324,17 @@
 
                 const cardId = `card-${index}`;
 
-                // SECCIÓN DE FOTOS MÚLTIPLES (Soporta hasta 20 fotos con scroll horizontal fluido)
                 let miniaturasHtml = '';
-                if (fotos.length > 0) {
+                if (urlsFotos.length > 0) {
                     miniaturasHtml = `
                     <div class="space-y-1.5">
                         <div class="text-[11px] font-bold text-teal-300 flex items-center justify-between">
-                            <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${fotos.length}/20)</span><span class="en-only">Photo gallery (${fotos.length}/20)</span></span>
+                            <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${urlsFotos.length}/20)</span><span class="en-only">Photo gallery (${urlsFotos.length}/20)</span></span>
                         </div>
                         <div class="flex gap-2 overflow-x-auto py-2 custom-scroll">` +
-                        fotos.map((f, fIdx) => `
-                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick="cambiarFotoPrincipal('${cardId}', '${f.url}')">
-                                <img src="${f.url}" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-300">
+                        urlsFotos.map((urlF, fIdx) => `
+                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick="cambiarFotoPrincipal('${cardId}', '${urlF}')">
+                                <img src="${urlF}" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-300">
                                 <span class="absolute bottom-1 right-1 bg-slate-900/80 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">${fIdx + 1}</span>
                             </div>
                         `).join('') +
@@ -329,7 +350,7 @@
                             <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-3 py-1 rounded-lg text-xs font-bold uppercase text-blue-400 shadow-md">
                                 ${tipo}
                             </div>
-                            ${fotos.length > 0 ? `<div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 shadow-md"><i class="fa-solid fa-camera"></i> ${fotos.length} fotos</div>` : ''}
+                            ${urlsFotos.length > 0 ? `<div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-bold text-white flex items-center gap-1.5 shadow-md"><i class="fa-solid fa-camera"></i> ${urlsFotos.length} fotos</div>` : ''}
                         </div>
                         
                         <div class="p-6">
