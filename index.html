@@ -282,8 +282,8 @@
         const AIRTABLE_TABLE_ID = 'tblDOfSEUY7ruAT9b';
         const AIRTABLE_TOKEN = 'patZFOwKTZ84Bqpbj.6399479788bbf78a0ab7057ddb0f127761a91cc87141c7ee1be3b7300c9693a3';
 
-        // URL de tu Webhook en Make para recibir las peticiones de Edición y Eliminación
-        const WEBHOOK_URL_ACCIONES = 'TU_WEBHOOK_URL_DE_MAKE';
+        // URL de tu Webhook en Make actualizada
+        const WEBHOOK_URL_ACCIONES = 'https://hook.us2.make.com/tu2n6phqt888zlgei4bnegug2vdd4opm';
 
         const TRADUCCION_TIPO = {
             'Venta': 'For Sale',
@@ -577,7 +577,7 @@
                 });
                 
                 if (res.ok) {
-                    alert('¡Solicitud enviada! Revisa tu correo electrónico para obtener el código de verificación.');
+                    alert('¡Solicitud enviada! Revisa tu correo electrónico para obtener el enlace de modificación.');
                 } else {
                     alert('Hubo un error al procesar la solicitud con el servidor.');
                 }
@@ -591,7 +591,7 @@
             const emailProp = prompt("Por favor, ingresa el correo electrónico registrado en esta propiedad para confirmar la eliminación:");
             if (!emailProp) return;
 
-            if (confirm('¿Estás seguro de solicitar la eliminación de esta publicación? Se enviará un código de confirmación a tu correo.')) {
+            if (confirm('¿Estás seguro de solicitar la eliminación de esta publicación? Se enviará un enlace de confirmación a tu correo.')) {
                 try {
                     const res = await fetch(WEBHOOK_URL_ACCIONES, {
                         method: 'POST',
