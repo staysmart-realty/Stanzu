@@ -62,14 +62,8 @@
         </div>
     </header>
 
-    <section id="hero" class="hero-bg pt-12 pb-16 md:pt-20 md:pb-24 px-4 relative flex items-center">
+    <section id="hero" class="hero-bg pt-16 pb-20 md:pt-24 md:px-4 relative flex items-center">
         <div class="max-w-4xl mx-auto text-center space-y-6">
-            <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/40 px-4 py-1.5 rounded-full text-blue-200 text-xs md:text-sm font-semibold uppercase tracking-wider backdrop-blur-sm">
-                <i class="fa-solid fa-house-signal text-blue-400"></i>
-                <span class="es-only">Publicación activa por solo $3 USD</span>
-                <span class="en-only">Active listing for only $3 USD</span>
-            </div>
-            
             <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight text-white drop-shadow-md">
                 <span class="text-white">STANZU</span> <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-teal-300 to-emerald-400">
@@ -78,7 +72,7 @@
                 </span>
             </h1>
             
-            <p class="text-slate-200 max-w-2xl mx-auto text-base md:text-lg leading-relaxed drop-shadow font-medium">
+            <p class="text-slate-200 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed drop-shadow font-medium">
                 <span class="es-only">Anuncia tu propiedad turística, casa o apartamento sin intermediarios. Sube hasta 20 fotos por solo $3 USD.</span>
                 <span class="en-only">List your tourist property, house or apartment without intermediaries. Upload up to 20 photos for only $3 USD.</span>
             </p>
@@ -166,7 +160,7 @@
                         <i class="fa-solid fa-user-secret"></i>
                         <span>Ciberseguridad y Datos Personales</span>
                     </div>
-                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                    <p class="leading-relaxed text-slate-300 text-base md:text-lg">
                         Las plataformas digitales son escenarios donde operan personas inescrupulosas. <strong>Nunca suministres toda tu información confidencial</strong> a posibles clientes sin antes verificar sus intenciones reales. Prevé cualquier situación que pueda poner en riesgo tu estabilidad financiera.
                     </p>
                 </div>
@@ -176,7 +170,7 @@
                         <i class="fa-solid fa-landmark"></i>
                         <span>Contratos y Notarías</span>
                     </div>
-                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                    <p class="leading-relaxed text-slate-300 text-base md:text-lg">
                         Procura que todos tus negocios, ya sean de venta, renta a largo plazo o turística, tengan un contrato formal de respaldo. Realiza los trámites definitivos en <strong>notarías</strong> o instituciones autorizadas que garanticen seguridad jurídica.
                     </p>
                 </div>
@@ -186,7 +180,7 @@
                         <i class="fa-solid fa-file-contract"></i>
                         <span>Seguro de Impago (Largo Plazo)</span>
                     </div>
-                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                    <p class="leading-relaxed text-slate-300 text-base md:text-lg">
                         Para arrendamientos residenciales o comerciales <strong>es altamente recomendable incluir un seguro por impago</strong>. Puedes proyectar este valor dentro de la tarifa mensual para asegurar protección económica total.
                     </p>
                 </div>
@@ -196,7 +190,7 @@
                         <i class="fa-solid fa-umbrella-beach"></i>
                         <span>Seguros y Depósitos (Turismo)</span>
                     </div>
-                    <p class="leading-relaxed text-slate-300 text-sm md:text-base">
+                    <p class="leading-relaxed text-slate-300 text-base md:text-lg">
                         En el alquiler vacacional, exige siempre un <strong>seguro por daños y pérdidas</strong> en el inmueble, acompañado de un <strong>depósito de garantía</strong> reembolsable antes de entregar las llaves de la propiedad.
                     </p>
                 </div>
@@ -221,6 +215,15 @@
             </div>
         </div>
     </footer>
+
+    <div id="lightboxModal" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4" onclick="cerrarLightbox()">
+        <div class="relative max-w-5xl max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
+            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white text-xl bg-slate-800/80 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer shadow-lg border border-slate-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="lightboxImg" src="" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-slate-800">
+        </div>
+    </div>
 
     <script>
         const AIRTABLE_BASE_ID = 'appOq20P1k1DXXpAm';
@@ -260,7 +263,6 @@
             }
         }
 
-        // Función inteligente para interpretar fotos tanto si vienen como Array, JSON de texto o URLs directas
         function obtenerFotosArray(rawFotos) {
             if (!rawFotos) return [];
             if (Array.isArray(rawFotos)) {
@@ -273,7 +275,6 @@
                         return parsed.map(item => typeof item === 'object' && item.url ? item.url : item);
                     }
                 } catch (e) {
-                    // Si es texto plano separado por comas o una sola URL
                     return rawFotos.split(',').map(s => s.trim()).filter(Boolean);
                 }
             }
@@ -306,7 +307,6 @@
                 const banos = prop['Banos'] || 0;
                 const descripcion = prop['Descripcion'] || (idiomaActual === 'es' ? 'Sin descripción disponible.' : 'No description available.');
                 
-                // Procesamos las fotos de manera segura con nuestra nueva función robusta
                 const urlsFotos = obtenerFotosArray(prop['Fotos_url']);
                 
                 const contactoNombre = prop['Contacto Nombre'] || '';
@@ -328,7 +328,7 @@
                 if (urlsFotos.length > 0) {
                     miniaturasHtml = `
                     <div class="space-y-1.5">
-                        <div class="text-[11px] font-bold text-teal-300 flex items-center justify-between">
+                        <div class="text-xs font-bold text-teal-300 flex items-center justify-between">
                             <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${urlsFotos.length}/20)</span><span class="en-only">Photo gallery (${urlsFotos.length}/20)</span></span>
                         </div>
                         <div class="flex gap-2 overflow-x-auto py-2 custom-scroll">` +
@@ -345,8 +345,13 @@
                 html += `
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group flex flex-col justify-between">
                     <div>
-                        <div class="relative h-56 bg-slate-800 overflow-hidden cursor-pointer" onclick="expandirTarjeta('${cardId}')">
+                        <div class="relative h-60 bg-slate-800 overflow-hidden cursor-pointer group/zoom" onclick="abrirLightbox(document.getElementById('${cardId}-main-img').src)">
                             <img id="${cardId}-main-img" src="${imgPrincipal}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover/zoom:opacity-100 transition flex items-center justify-center">
+                                <span class="bg-slate-900/90 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg flex items-center gap-1.5">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="es-only">Ver grande</span><span class="en-only">View large</span>
+                                </span>
+                            </div>
                             <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-3 py-1 rounded-lg text-xs font-bold uppercase text-blue-400 shadow-md">
                                 ${tipo}
                             </div>
@@ -354,19 +359,19 @@
                         </div>
                         
                         <div class="p-6">
-                            <div class="text-xs text-blue-400 font-bold uppercase tracking-wider mb-1.5">
+                            <div class="text-sm text-blue-400 font-bold uppercase tracking-wider mb-2">
                                 <i class="fa-solid fa-location-dot mr-1"></i>${ciudad}${sector ? ' · ' + sector : ''}
                             </div>
-                            <h4 class="text-lg font-bold text-white mb-2 cursor-pointer hover:text-blue-300 transition" onclick="expandirTarjeta('${cardId}')">${titulo}</h4>
-                            ${tipoInmueble ? `<div class="text-xs md:text-sm text-slate-300 mb-4 bg-slate-900/60 inline-block px-2.5 py-1 rounded-md border border-slate-800">${tipoInmueble}</div>` : '<div class="mb-4"></div>'}
+                            <h4 class="text-xl font-bold text-white mb-2 cursor-pointer hover:text-blue-300 transition" onclick="expandirTarjeta('${cardId}')">${titulo}</h4>
+                            ${tipoInmueble ? `<div class="text-sm md:text-base text-slate-200 mb-4 bg-slate-900/80 inline-block px-3 py-1 rounded-md border border-slate-800 font-medium">${tipoInmueble}</div>` : '<div class="mb-4"></div>'}
 
-                            <div class="flex items-center gap-5 text-sm text-slate-300 mb-4 pb-4 border-b border-slate-800">
+                            <div class="flex items-center gap-6 text-base text-slate-200 mb-5 pb-4 border-b border-slate-800 font-medium">
                                 <span class="flex items-center gap-2"><i class="fa-solid fa-bed text-blue-400"></i> ${habitaciones} <span class="es-only">hab.</span><span class="en-only">beds</span></span>
                                 <span class="flex items-center gap-2"><i class="fa-solid fa-bath text-teal-400"></i> ${banos} <span class="es-only">baños</span><span class="en-only">baths</span></span>
                             </div>
 
                             <div class="flex items-center justify-between mb-2">
-                                <div class="text-xl font-black text-emerald-400">${textoPrecio}</div>
+                                <div class="text-2xl font-black text-emerald-400">${textoPrecio}</div>
                                 <button onclick="expandirTarjeta('${cardId}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5 cursor-pointer bg-blue-950/40 px-3 py-1.5 rounded-lg border border-blue-500/30 transition">
                                     <span class="es-only">Ver detalles</span><span class="en-only">View details</span>
                                     <i class="fa-solid fa-chevron-down text-[10px]" id="${cardId}-icon"></i>
@@ -380,16 +385,16 @@
                                     <div class="text-xs font-bold uppercase text-blue-400 mb-2 flex items-center gap-2">
                                         <i class="fa-solid fa-align-left"></i> <span class="es-only">Descripción completa</span><span class="en-only">Full Description</span>
                                     </div>
-                                    <p class="leading-relaxed text-slate-200 text-sm md:text-base whitespace-pre-line break-words">${descripcion}</p>
+                                    <p class="leading-relaxed text-slate-100 text-base md:text-lg whitespace-pre-line break-words">${descripcion}</p>
                                 </div>
                                 
                                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2.5">
                                     <div class="text-xs font-bold uppercase text-slate-400">
                                         <span class="es-only">Contacto Directo del Anunciante</span><span class="en-only">Direct Advertiser Contact</span>
                                     </div>
-                                    <p class="text-white text-sm font-semibold"><i class="fa-solid fa-user mr-2 text-blue-400"></i>${contactoNombre}</p>
-                                    <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-xs md:text-sm bg-emerald-950/50 border border-emerald-500/40 px-3.5 py-2 rounded-xl hover:bg-emerald-900/40 transition shadow">
-                                        <i class="fa-brands fa-whatsapp text-base"></i> ${contactoTel}
+                                    <p class="text-white text-base font-semibold"><i class="fa-solid fa-user mr-2 text-blue-400"></i>${contactoNombre}</p>
+                                    <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-sm md:text-base bg-emerald-950/50 border border-emerald-500/40 px-4 py-2.5 rounded-xl hover:bg-emerald-900/40 transition shadow">
+                                        <i class="fa-brands fa-whatsapp text-lg"></i> ${contactoTel}
                                     </a>
                                 </div>
                             </div>
@@ -419,6 +424,23 @@
             const imgMain = document.getElementById(cardId + '-main-img');
             if (imgMain) {
                 imgMain.src = urlFoto;
+            }
+        }
+
+        // Funciones para el Lightbox de imágenes grandes
+        function abrirLightbox(url) {
+            const modal = document.getElementById('lightboxModal');
+            const img = document.getElementById('lightboxImg');
+            if (modal && img) {
+                img.src = url;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function cerrarLightbox() {
+            const modal = document.getElementById('lightboxModal');
+            if (modal) {
+                modal.classList.add('hidden');
             }
         }
 
