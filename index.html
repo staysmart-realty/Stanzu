@@ -218,10 +218,22 @@
 
     <div id="lightboxModal" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4" onclick="cerrarLightbox()">
         <div class="relative max-w-5xl max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
-            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white text-xl bg-slate-800/80 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer shadow-lg border border-slate-700">
+            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white text-xl bg-slate-800/80 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer shadow-lg border border-slate-700 z-20">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <img id="lightboxImg" src="" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-slate-800">
+            
+            <button onclick="lightboxAnterior()" class="absolute left-2 md:-left-14 top-1/2 -translate-y-1/2 text-white text-xl bg-slate-800/80 hover:bg-slate-700 w-12 h-12 rounded-full flex items-center justify-center transition cursor-pointer shadow-lg border border-slate-700 z-20">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <div class="flex flex-col items-center">
+                <img id="lightboxImg" src="" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl border border-slate-800">
+                <div id="lightboxCounter" class="mt-3 bg-slate-900/90 border border-slate-800 px-4 py-1.5 rounded-full text-xs font-bold text-slate-300 shadow-lg"></div>
+            </div>
+
+            <button onclick="lightboxSiguiente()" class="absolute right-2 md:-right-14 top-1/2 -translate-y-1/2 text-white text-xl bg-slate-800/80 hover:bg-slate-700 w-12 h-12 rounded-full flex items-center justify-center transition cursor-pointer shadow-lg border border-slate-700 z-20">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
@@ -242,6 +254,10 @@
         let itemsVisibles = 9;
         const ITEMS_POR_VISTA = 9;
 
+        // Variables de estado para el Lightbox Carrusel
+        let lightboxFotosActuales = [];
+        let lightboxIndexActual = 0;
+
         async function cargarPropiedades() {
             const container = document.getElementById('gridPropiedadesPreview');
             container.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8 text-sm">Cargando propiedades...</p>';
@@ -255,7 +271,7 @@
                 if (!res.ok) throw new Error('Error al cargar: ' + res.status);
 
                 const data = await res.json();
-                propiedadesReales = data.records.map(r => r.fields);
+                propiedadesReales = data.records.map(r => ({ id: r.id, ...r.fields }));
                 renderizarGridPreview();
             } catch (err) {
                 console.error(err);
@@ -295,6 +311,7 @@
             const propiedadesAMostrar = propiedadesReales.slice(0, itemsVisibles);
 
             propiedadesAMostrar.forEach((prop, index) => {
+                const propId = prop.id || index;
                 const titulo = prop['Titulo'] || (idiomaActual === 'es' ? 'Propiedad sin título' : 'Untitled property');
                 const ciudad = prop['Ciudad'] || '';
                 const sector = prop['Sector'] || '';
@@ -311,6 +328,7 @@
                 
                 const contactoNombre = prop['Contacto Nombre'] || '';
                 const contactoTel = prop['WhatsApp o Telefono'] || '';
+                const contactoEmail = prop['Email'] || '';
 
                 const imgPrincipal = urlsFotos.length > 0 ? urlsFotos[0] : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800';
 
@@ -323,17 +341,18 @@
                 }
 
                 const cardId = `card-${index}`;
+                const fotosJsonStr = JSON.stringify(urlsFotos).replace(/"/g, '&quot;');
 
                 let miniaturasHtml = '';
                 if (urlsFotos.length > 0) {
                     miniaturasHtml = `
                     <div class="space-y-1.5" onclick="event.stopPropagation()">
                         <div class="text-xs font-bold text-teal-300 flex items-center justify-between">
-                            <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${urlsFotos.length}/20)</span><span class="en-only">Photo gallery (${urlsFotos.length}/20)</span></span>
+                            <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${urlsFotos.length}/20) - Click para ver carrusel</span><span class="en-only">Photo gallery (${urlsFotos.length}/20) - Click to view carousel</span></span>
                         </div>
                         <div class="flex gap-2 overflow-x-auto py-2 custom-scroll">` +
                         urlsFotos.map((urlF, fIdx) => `
-                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick="abrirLightbox('${urlF}'); event.stopPropagation();">
+                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick='abrirLightboxGaleria(${fotosJsonStr}, ${fIdx}); event.stopPropagation();'>
                                 <img src="${urlF}" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-300">
                                 <span class="absolute bottom-1 right-1 bg-slate-900/80 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">${fIdx + 1}</span>
                             </div>
@@ -345,11 +364,11 @@
                 html += `
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group flex flex-col justify-between cursor-pointer" onclick="expandirTarjeta('${cardId}')">
                     <div>
-                        <div class="relative h-60 bg-slate-800 overflow-hidden group/zoom" onclick="abrirLightbox('${imgPrincipal}'); event.stopPropagation();">
-                            <img id="${cardId}-main-img" src="${imgPrincipal}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="relative h-60 bg-slate-800 overflow-hidden group/zoom" onclick='abrirLightboxGaleria(${fotosJsonStr}, 0); event.stopPropagation();'>
+                            <img src="${imgPrincipal}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover/zoom:opacity-100 transition flex items-center justify-center">
                                 <span class="bg-slate-900/90 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg flex items-center gap-1.5">
-                                    <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="es-only">Ver foto grande</span><span class="en-only">View large photo</span>
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="es-only">Ver galería en grande</span><span class="en-only">View full gallery</span>
                                 </span>
                             </div>
                             <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-3 py-1 rounded-lg text-xs font-bold uppercase text-blue-400 shadow-md">
@@ -383,19 +402,29 @@
                                 
                                 <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
                                     <div class="text-xs font-bold uppercase text-blue-400 mb-2 flex items-center gap-2">
-                                        <i class="fa-solid fa-align-left"></i> <span class="es-only">Descripción completa</span><span class="en-only">Full Description</span>
+                                        <i class="fa-solid fa-align-left"></i> <span class="es-only">Descripción completa (hasta 2000 caracteres)</span><span class="en-only">Full Description (up to 2000 chars)</span>
                                     </div>
                                     <p class="leading-relaxed text-slate-100 text-base md:text-lg whitespace-pre-line break-words">${descripcion}</p>
                                 </div>
                                 
                                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2.5">
                                     <div class="text-xs font-bold uppercase text-slate-400">
-                                        <span class="es-only">Contacto Directo del Anunciante</span><span class="en-only">Direct Advertiser Contact</span>
+                                        <span class="es-only">Datos del Propietario / Anunciante</span><span class="en-only">Owner / Advertiser Details</span>
                                     </div>
                                     <p class="text-white text-base font-semibold"><i class="fa-solid fa-user mr-2 text-blue-400"></i>${contactoNombre}</p>
+                                    ${contactoEmail ? `<p class="text-slate-300 text-sm"><i class="fa-solid fa-envelope mr-2 text-teal-400"></i>${contactoEmail}</p>` : ''}
                                     <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-sm md:text-base bg-emerald-950/50 border border-emerald-500/40 px-4 py-2.5 rounded-xl hover:bg-emerald-900/40 transition shadow">
                                         <i class="fa-brands fa-whatsapp text-lg"></i> ${contactoTel}
                                     </a>
+                                </div>
+
+                                <div class="flex items-center gap-3 pt-2">
+                                    <button onclick="solicitarEdicion('${propId}')" class="flex-1 bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/30 text-blue-300 font-bold py-2.5 rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-pen-to-square"></i> <span class="es-only">Editar publicación</span><span class="en-only">Edit listing</span>
+                                    </button>
+                                    <button onclick="solicitarEliminacion('${propId}')" class="flex-1 bg-red-600/20 border border-red-500/40 hover:bg-red-600/30 text-red-300 font-bold py-2.5 rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can"></i> <span class="es-only">Eliminar publicación</span><span class="en-only">Delete listing</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -420,20 +449,53 @@
             if (el) el.classList.toggle('hidden');
         }
 
-        // Funciones para el Lightbox de imágenes grandes
-        function abrirLightbox(url) {
-            const modal = document.getElementById('lightboxModal');
+        // Funciones del Lightbox con Carrusel Interactivo
+        function abrirLightboxGaleria(fotosArray, index) {
+            if (!fotosArray || fotosArray.length === 0) return;
+            lightboxFotosActuales = fotosArray;
+            lightboxIndexActual = index;
+            actualizarImagenLightbox();
+            document.getElementById('lightboxModal').classList.remove('hidden');
+        }
+
+        function actualizarImagenLightbox() {
             const img = document.getElementById('lightboxImg');
-            if (modal && img) {
-                img.src = url;
-                modal.classList.remove('hidden');
+            const counter = document.getElementById('lightboxCounter');
+            if (img && lightboxFotosActuales.length > 0) {
+                img.src = lightboxFotosActuales[lightboxIndexActual];
+                if (counter) {
+                    counter.textContent = `${lightboxIndexActual + 1} / ${lightboxFotosActuales.length}`;
+                }
             }
+        }
+
+        function lightboxAnterior() {
+            if (lightboxFotosActuales.length === 0) return;
+            lightboxIndexActual = (lightboxIndexActual - 1 + lightboxFotosActuales.length) % lightboxFotosActuales.length;
+            actualizarImagenLightbox();
+        }
+
+        function lightboxSiguiente() {
+            if (lightboxFotosActuales.length === 0) return;
+            lightboxIndexActual = (lightboxIndexActual + 1) % lightboxFotosActuales.length;
+            actualizarImagenLightbox();
         }
 
         function cerrarLightbox() {
             const modal = document.getElementById('lightboxModal');
             if (modal) {
                 modal.classList.add('hidden');
+            }
+        }
+
+        // Placeholders para futuros flujos con Make / Código por Email
+        function solicitarEdicion(propId) {
+            alert('Próximamente: Se enviará un código de verificación a tu correo para habilitar la edición de la propiedad ID: ' + propId);
+        }
+
+        function solicitarEliminacion(propId) {
+            if (confirm('¿Estás seguro de solicitar la eliminación de esta publicación? Se enviará un código de confirmación a tu correo.')) {
+                alert('Próximamente: Solicitud de eliminación enviada para la propiedad ID: ' + propId);
             }
         }
 
