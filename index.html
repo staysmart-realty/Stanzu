@@ -22,7 +22,7 @@
         .no-copy { user-select: none; }
         .card-glow:hover { box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.4); transform: translateY(-3px); }
         
-        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar { height: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
     </style>
@@ -216,112 +216,6 @@
             </div>
         </div>
     </footer>
-
-    <div id="modalTerminosServicio" class="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto" onclick="cerrarModal('modalTerminosServicio')">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden my-auto" onclick="event.stopPropagation()">
-            <div class="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
-                <h3 class="text-xl font-black text-white flex items-center gap-2.5">
-                    <i class="fa-solid fa-file-contract text-blue-400"></i> <span class="es-only">Términos y Condiciones del Servicio - Stanzu</span><span class="en-only">Terms of Service - Stanzu</span>
-                </h3>
-                <button onclick="cerrarModal('modalTerminosServicio')" class="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="p-6 md:p-8 overflow-y-auto space-y-6 text-slate-300 text-sm md:text-base leading-relaxed custom-scroll">
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">1. Objeto y Ámbito de Aplicación</h4>
-                    <p>Bienvenido a <strong>Stanzu</strong>. Los presentes Términos y Condiciones regulan el uso de nuestra plataforma digital de clasificados inmobiliarios, destinada a conectar de forma directa a propietarios, arrendadores y oferentes con potenciales compradores o inquilinos de bienes raíces (casas, apartamentos, lotes, fincas y rentas turísticas) en Colombia y el mundo. Al utilizar nuestros servicios, procesar pagos o publicar anuncios, el usuario declara haber leído, comprendido y aceptado íntegramente este documento.</p>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">2. Modelo de Publicación y Tarifas ($3 USD)</h4>
-                    <p>Stanzu ofrece un modelo autogestionado de publicación de inmuebles mediante el cual el anunciante puede cargar hasta veinte (20) fotografías de alta resolución y la descripción detallada de su propiedad. El costo por publicación es de <strong>tres dólares estadounidenses ($3 USD)</strong>, pagaderos de forma segura a través de la pasarela oficial de PayPal. Una vez verificado el pago exitoso, el sistema redirige automáticamente al usuario al formulario de registro en Tally para incorporar su información a nuestra base de datos sincronizada con Airtable.</p>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">3. Veracidad de la Información y Contenidos Multimedia</h4>
-                    <p>El anunciante es el único y exclusivo responsable por la veracidad, exactitud, vigencia y legalidad de los datos, descripciones, precios y fotografías suministradas sobre el inmueble. Stanzu prohíbe estrictamente la publicación de imágenes falsas, sacadas de internet sin autorización, correspondientes a otros inmuebles o alteradas digitalmente para engañar. El incumplimiento de esta norma dará lugar al retiro inmediato de la publicación sin derecho a reembolso.</p>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">4. Prevención de Fraudes y Guía de Seguridad (Basado en Lineamientos Oficiales)</h4>
-                    <p>Siguiendo las recomendaciones de seguridad de la <strong>Policía Nacional de Colombia</strong> y estándares de portales inmobiliarios líderes como <strong>Finca Raíz</strong> y <strong>Metrocuadrado</strong>, Stanzu advierte a los usuarios sobre los riesgos de fraude digital:</p>
-                    <ul class="list-disc pl-5 space-y-2 mt-2">
-                        <li><strong>Verificación de Identidad:</strong> Exija siempre documentos de identidad y certificados de tradición y libertad antes de concretar cualquier negociación o adelantar dinero.</li>
-                        <li><strong>Cuentas de Destino:</strong> Nunca realice transferencias a cuentas de personas naturales desconocidas o intermediarios informales sin verificar contratos formales en notaría.</li>
-                        <li><strong>Precios Irreales:</strong> Desconfíe de ofertas con precios exageradamente bajos por debajo del valor promedio del mercado.</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">5. Limitación de Responsabilidad</h4>
-                    <p>Stanzu actúa exclusivamente como un directorio digital y pasarela de anuncios clasificados. <strong>No somos corredores inmobiliarios, agentes de finca raíz ni intermediarios financieros</strong> en las transacciones entre particulares. Por lo tanto, Stanzu no asume ninguna responsabilidad por disputas, incumplimientos contractuales, daños o pérdidas económicas derivadas de las negociaciones directas entre compradores, arrendatarios y propietarios.</p>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-slate-800 bg-slate-950/50 text-right">
-                <button onclick="cerrarModal('modalTerminosServicio')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition cursor-pointer">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalPoliticaPrivacidad" class="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto" onclick="cerrarModal('modalPoliticaPrivacidad')">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden my-auto" onclick="event.stopPropagation()">
-            <div class="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
-                <h3 class="text-xl font-black text-white flex items-center gap-2.5">
-                    <i class="fa-solid fa-shield-cat text-teal-400"></i> <span class="es-only">Política de Privacidad y Tratamiento de Datos - Stanzu</span><span class="en-only">Privacy Policy - Stanzu</span>
-                </h3>
-                <button onclick="cerrarModal('modalPoliticaPrivacidad')" class="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="p-6 md:p-8 overflow-y-auto space-y-6 text-slate-300 text-sm md:text-base leading-relaxed custom-scroll">
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">1. Compromiso con la Privacidad</h4>
-                    <p>En <strong>Stanzu</strong> valoramos y respetamos la privacidad de nuestros usuarios. Dando cumplimiento a las normativas vigentes de protección de datos personales, esta Política de Privacidad explica de manera transparente qué información recopilamos, cómo la utilizamos y cuáles son sus derechos como titular de los datos suministrados en nuestra plataforma web.</p>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">2. Información que Recopilamos</h4>
-                    <p>Para la publicación y gestión de anuncios inmobiliarios, Stanzu recopila los siguientes datos personales y de contacto proporcionados directamente por el usuario:</p>
-                    <ul class="list-disc pl-5 space-y-2 mt-2">
-                        <li>Nombre completo y/o razón social del anunciante.</li>
-                        <li>Correo electrónico oficial de contacto y notificaciones.</li>
-                        <li>Número de teléfono celular y/o WhatsApp corporativo.</li>
-                        <li>Ubicación detallada, características y hasta 20 fotografías del inmueble.</li>
-                        <li>Datos transaccionales básicos de confirmación de pago gestionados a través de PayPal.</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">3. Finalidad del Tratamiento de los Datos</h4>
-                    <p>La información recolectada es almacenada de forma segura en bases de datos integradas (Airtable) y utilizada exclusivamente para los siguientes fines operativos:</p>
-                    <ul class="list-disc pl-5 space-y-2 mt-2">
-                        <li>Mostrar el catálogo público de inmuebles en la plataforma Stanzu para conectar compradores e inquilinos con el propietario.</li>
-                        <li>Facilitar el contacto directo vía WhatsApp o correo electrónico entre interesados y anunciantes.</li>
-                        <li>Enviar notificaciones técnicas, actualizaciones de estado de publicaciones o códigos de verificación de edición/eliminación de anuncios.</li>
-                        <li>Prevenir fraudes y garantizar la trazabilidad de las publicaciones suscritas.</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">4. Seguridad y Confidencialidad de la Información</h4>
-                    <p>Stanzu implementa medidas técnicas, administrativas y de seguridad informática razonables para proteger sus datos personales contra acceso no autorizado, pérdida, alteración o divulgación indebida. Sus datos de pago (tarjetas o cuentas bancarias) son procesados directamente por PayPal bajo sus estrictos estándares internacionales de cifrado, por lo que Stanzu jamás almacena datos financieros sensibles en sus servidores.</p>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold text-lg mb-2">5. Derechos de los Titulares y Supresión de Datos</h4>
-                    <p>Como usuario y titular de sus datos personales, usted tiene derecho en todo momento a conocer, actualizar, rectificar o solicitar la supresión y eliminación total de su publicación y datos asociados de nuestra base de datos. Para ejercer cualquiera de estos derechos o resolver dudas sobre esta política, puede comunicarse a través de los canales oficiales habilitados en la plataforma.</p>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-slate-800 bg-slate-950/50 text-right">
-                <button onclick="cerrarModal('modalPoliticaPrivacidad')" class="bg-teal-600 hover:bg-teal-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition cursor-pointer">Cerrar</button>
-            </div>
-        </div>
-    </div>
 
     <div id="lightboxModal" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4" onclick="cerrarLightbox()">
         <div class="relative max-w-5xl max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
