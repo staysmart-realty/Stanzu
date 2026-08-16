@@ -78,12 +78,23 @@
             </p>
             
             <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4 items-center">
-                <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white font-bold px-8 py-4 rounded-xl text-base md:text-lg transition shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center gap-2.5 cursor-pointer">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> 
-                    <span class="es-only">Publicar mi Inmueble ($3 USD)</span>
-                    <span class="en-only">Publish My Property ($3 USD)</span>
+                <a href="https://paypal.me/AndresCollazos989" target="_blank" rel="noopener" class="bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white font-bold px-7 py-3.5 rounded-xl text-sm md:text-base transition shadow-[0_0_20px_rgba(59,130,246,0.4)] flex items-center gap-2.5 cursor-pointer">
+                    <i class="fa-brands fa-paypal"></i> 
+                    <span class="es-only">1. Pagar $3 USD en PayPal</span>
+                    <span class="en-only">1. Pay $3 USD on PayPal</span>
+                </a>
+
+                <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-slate-900 border border-slate-700 hover:border-slate-600 text-teal-300 font-bold px-7 py-3.5 rounded-xl text-sm md:text-base transition shadow-lg flex items-center gap-2.5 cursor-pointer">
+                    <i class="fa-solid fa-file-lines"></i> 
+                    <span class="es-only">2. Llenar Formulario de Anuncio</span>
+                    <span class="en-only">2. Fill Listing Form</span>
                 </button>
             </div>
+            
+            <p class="text-xs text-slate-400 mt-2">
+                <span class="es-only">* Realiza el pago primero en PayPal y luego completa los datos de tu inmueble.</span>
+                <span class="en-only">* Make the payment first on PayPal and then complete your property details.</span>
+            </p>
         </div>
     </section>
 
@@ -99,16 +110,19 @@
                     <span class="es-only">Carga hasta 20 fotografías detalladas de tu inmueble por solo $3 USD vía PayPal. Explora el catálogo activo:</span>
                     <span class="en-only">Upload up to 20 detailed photos of your property for only $3 USD via PayPal. Explore the active catalog:</span>
                 </p>
+                
                 <div class="pt-2 flex flex-wrap justify-center gap-4">
-                     <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-slate-900 border border-blue-500/50 hover:border-blue-400 text-white font-bold px-6 py-3 rounded-xl text-sm md:text-base transition shadow-lg inline-flex items-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-file-pen text-blue-400"></i> 
-                        <span class="es-only">Llenar Formulario de Anuncio</span>
-                        <span class="en-only">Fill Listing Form</span>
-                    </button>
                     <a href="https://paypal.me/AndresCollazos989" target="_blank" rel="noopener" class="bg-blue-600/20 border border-blue-500 hover:bg-blue-600/30 text-blue-300 font-bold px-6 py-3 rounded-xl text-sm md:text-base transition shadow-lg inline-flex items-center gap-2">
                         <i class="fa-brands fa-paypal text-blue-400"></i>
-                        <span>Pagar $3 USD (PayPal)</span>
+                        <span class="es-only">1. Pagar $3 USD (PayPal)</span>
+                        <span class="en-only">1. Pay $3 USD (PayPal)</span>
                     </a>
+                    
+                    <button data-tally-open="rjQQ1X" data-tally-layout="modal" data-tally-width="700" class="bg-slate-900 border border-slate-700 hover:border-slate-600 text-teal-300 font-bold px-6 py-3 rounded-xl text-sm md:text-base transition shadow-lg inline-flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-file-pen"></i> 
+                        <span class="es-only">2. Llenar Formulario de Anuncio</span>
+                        <span class="en-only">2. Fill Listing Form</span>
+                    </button>
                 </div>
             </div>
 
@@ -254,7 +268,6 @@
         let itemsVisibles = 9;
         const ITEMS_POR_VISTA = 9;
 
-        // Variables de estado para el Lightbox Carrusel
         let lightboxFotosActuales = [];
         let lightboxIndexActual = 0;
 
@@ -449,7 +462,6 @@
             if (el) el.classList.toggle('hidden');
         }
 
-        // Funciones del Lightbox con Carrusel Interactivo
         function abrirLightboxGaleria(fotosArray, index) {
             if (!fotosArray || fotosArray.length === 0) return;
             lightboxFotosActuales = fotosArray;
@@ -488,7 +500,6 @@
             }
         }
 
-        // Placeholders para futuros flujos con Make / Código por Email
         function solicitarEdicion(propId) {
             alert('Próximamente: Se enviará un código de verificación a tu correo para habilitar la edición de la propiedad ID: ' + propId);
         }
