@@ -327,13 +327,13 @@
                 let miniaturasHtml = '';
                 if (urlsFotos.length > 0) {
                     miniaturasHtml = `
-                    <div class="space-y-1.5">
+                    <div class="space-y-1.5" onclick="event.stopPropagation()">
                         <div class="text-xs font-bold text-teal-300 flex items-center justify-between">
                             <span><i class="fa-solid fa-images mr-1.5"></i> <span class="es-only">Galería fotográfica (${urlsFotos.length}/20)</span><span class="en-only">Photo gallery (${urlsFotos.length}/20)</span></span>
                         </div>
                         <div class="flex gap-2 overflow-x-auto py-2 custom-scroll">` +
                         urlsFotos.map((urlF, fIdx) => `
-                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick="cambiarFotoPrincipal('${cardId}', '${urlF}')">
+                            <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 shadow-md group/img cursor-pointer" onclick="abrirLightbox('${urlF}'); event.stopPropagation();">
                                 <img src="${urlF}" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-300">
                                 <span class="absolute bottom-1 right-1 bg-slate-900/80 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">${fIdx + 1}</span>
                             </div>
@@ -343,13 +343,13 @@
                 }
 
                 html += `
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group flex flex-col justify-between">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden card-glow transition duration-300 group flex flex-col justify-between cursor-pointer" onclick="expandirTarjeta('${cardId}')">
                     <div>
-                        <div class="relative h-60 bg-slate-800 overflow-hidden cursor-pointer group/zoom" onclick="abrirLightbox(document.getElementById('${cardId}-main-img').src)">
+                        <div class="relative h-60 bg-slate-800 overflow-hidden group/zoom" onclick="abrirLightbox('${imgPrincipal}'); event.stopPropagation();">
                             <img id="${cardId}-main-img" src="${imgPrincipal}" alt="${titulo}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             <div class="absolute inset-0 bg-slate-950/30 opacity-0 group-hover/zoom:opacity-100 transition flex items-center justify-center">
                                 <span class="bg-slate-900/90 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg flex items-center gap-1.5">
-                                    <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="es-only">Ver grande</span><span class="en-only">View large</span>
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="es-only">Ver foto grande</span><span class="en-only">View large photo</span>
                                 </span>
                             </div>
                             <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 px-3 py-1 rounded-lg text-xs font-bold uppercase text-blue-400 shadow-md">
@@ -362,7 +362,7 @@
                             <div class="text-sm text-blue-400 font-bold uppercase tracking-wider mb-2">
                                 <i class="fa-solid fa-location-dot mr-1"></i>${ciudad}${sector ? ' · ' + sector : ''}
                             </div>
-                            <h4 class="text-xl font-bold text-white mb-2 cursor-pointer hover:text-blue-300 transition" onclick="expandirTarjeta('${cardId}')">${titulo}</h4>
+                            <h4 class="text-xl font-bold text-white mb-2 transition">${titulo}</h4>
                             ${tipoInmueble ? `<div class="text-sm md:text-base text-slate-200 mb-4 bg-slate-900/80 inline-block px-3 py-1 rounded-md border border-slate-800 font-medium">${tipoInmueble}</div>` : '<div class="mb-4"></div>'}
 
                             <div class="flex items-center gap-6 text-base text-slate-200 mb-5 pb-4 border-b border-slate-800 font-medium">
@@ -372,13 +372,13 @@
 
                             <div class="flex items-center justify-between mb-2">
                                 <div class="text-2xl font-black text-emerald-400">${textoPrecio}</div>
-                                <button onclick="expandirTarjeta('${cardId}')" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5 cursor-pointer bg-blue-950/40 px-3 py-1.5 rounded-lg border border-blue-500/30 transition">
+                                <div class="text-xs font-bold text-blue-400 flex items-center gap-1.5 bg-blue-950/40 px-3 py-1.5 rounded-lg border border-blue-500/30 transition">
                                     <span class="es-only">Ver detalles</span><span class="en-only">View details</span>
                                     <i class="fa-solid fa-chevron-down text-[10px]" id="${cardId}-icon"></i>
-                                </button>
+                                </div>
                             </div>
 
-                            <div id="${cardId}" class="hidden mt-4 pt-4 border-t border-slate-800 text-sm text-slate-200 space-y-4">
+                            <div id="${cardId}" class="hidden mt-4 pt-4 border-t border-slate-800 text-sm text-slate-200 space-y-4" onclick="event.stopPropagation()">
                                 ${miniaturasHtml}
                                 
                                 <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800">
@@ -393,7 +393,7 @@
                                         <span class="es-only">Contacto Directo del Anunciante</span><span class="en-only">Direct Advertiser Contact</span>
                                     </div>
                                     <p class="text-white text-base font-semibold"><i class="fa-solid fa-user mr-2 text-blue-400"></i>${contactoNombre}</p>
-                                    <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-sm md:text-base bg-emerald-950/50 border border-emerald-500/40 px-4 py-2.5 rounded-xl hover:bg-emerald-900/40 transition shadow">
+                                    <a href="https://wa.me/${(contactoTel || '').replace(/[^0-9]/g,'')}" target="_blank" class="inline-flex items-center gap-2 mt-1 text-emerald-400 font-bold text-sm md:text-base bg-emerald-950/50 border border-emerald-500/40 px-4 py-2.5 rounded-xl hover:bg-emerald-900/40 transition shadow">
                                         <i class="fa-brands fa-whatsapp text-lg"></i> ${contactoTel}
                                     </a>
                                 </div>
@@ -418,13 +418,6 @@
         function expandirTarjeta(cardId) {
             const el = document.getElementById(cardId);
             if (el) el.classList.toggle('hidden');
-        }
-
-        function cambiarFotoPrincipal(cardId, urlFoto) {
-            const imgMain = document.getElementById(cardId + '-main-img');
-            if (imgMain) {
-                imgMain.src = urlFoto;
-            }
         }
 
         // Funciones para el Lightbox de imágenes grandes
