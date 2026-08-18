@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmar baja de inmueble - Stanzu</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .card {
+    background: #ffffff;
+    max-width: 480px;
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+  }
+  h2 { color: #ef4444; margin-top: 0; }
+  p { color: #333; line-height: 1.5; }
+  button {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+  .msg { margin-top: 18px; font-size: 14px; }
+  .error { color: #ef4444; }
+  .success { color: #16a34a; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="stateDefault">
+    <h2>Confirmar baja de inmueble</h2>
+    <p>Está a punto de eliminar definitivamente su inmueble de la plataforma <strong>Stanzu</strong>. Esta acción no se puede deshacer.</p>
+    <button id="confirmBtn">Sí, eliminar definitivamente</button>
+    <div id="msg" class="msg"></div>
+  </div>
+</div>
+
+<script>
+  // Toma el propId de la URL, ej: confirmar-baja.html?propId=rec123456
+  const params = new URLSearchParams(window.location.search);
+  const propId = params.get('propId');
+
+  const btn = document.getElementById('confirmBtn');
+  const msg = document.getElementById('msg');
+
+  // URL del webhook de Make (mismo endpoint, ahora se llama por POST solo al hacer clic)
+  const WEBHOOK_URL = 'https://hook.us2.make.com/l4saj3bf7i44o7vlxac3kp8od278pglf';
+
+  if (!propId) {
+    btn.disabled = true;
+    msg.textContent = 'Enlace inválido: falta el identificador del inmueble.';
+    msg.className = 'msg error';
+  }
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    msg.textContent = 'Procesando...';
+    msg.className = 'msg';
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propId: propId })
+      });
+
+      if (res.ok) {
+        msg.textContent = 'Su inmueble ha sido eliminado definitivamente de Stanzu.';
+        msg.className = 'msg success';
+      } else {
+        throw new Error('Respuesta no exitosa');
+      }
+    } catch (err) {
+      msg.textContent = 'Ocurrió un error. Por favor intente de nuevo o contáctenos.';
+      msg.className = 'msg error';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
