@@ -284,6 +284,8 @@
 
         // URL de tu Webhook en Make actualizada
         const WEBHOOK_URL_ACCIONES = 'https://hook.us2.make.com/tu2n6phqt888zlgei4bnegug2vdd4opm';
+        // Webhook de eliminación directa (ejecuta el borrado al instante, sin correo intermedio)
+        const WEBHOOK_URL_ELIMINAR = 'https://hook.us2.make.com/l4saj3bf7i44o7vlxac3kp8od278pglf';
 
         const TRADUCCION_TIPO = {
             'Venta': 'For Sale',
@@ -496,11 +498,13 @@
                                 </div>
 
                                 <div class="flex items-center gap-3 pt-2">
-                                    <button onclick="solicitarEdicion('${propId}')" class="flex-1 bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/30 text-blue-300 font-bold py-2.5 rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
-                                        <i class="fa-solid fa-pen-to-square"></i> <span class="es-only">Editar publicación</span><span class="en-only">Edit listing</span>
+                                    <button onclick="solicitarEdicion('${propId}')" class="flex-1 group bg-slate-800/60 hover:bg-blue-600 border border-slate-700 hover:border-blue-500 text-slate-300 hover:text-white font-bold py-2.5 rounded-xl text-xs md:text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:shadow-[0_0_16px_rgba(59,130,246,0.5)]">
+                                        <span class="w-6 h-6 rounded-full bg-blue-500/20 group-hover:bg-white/20 flex items-center justify-center transition"><i class="fa-solid fa-pen-to-square text-blue-400 group-hover:text-white text-[11px]"></i></span>
+                                        <span class="es-only">Editar</span><span class="en-only">Edit</span>
                                     </button>
-                                    <button onclick="solicitarEliminacion('${propId}')" class="flex-1 bg-red-600/20 border border-red-500/40 hover:bg-red-600/30 text-red-300 font-bold py-2.5 rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
-                                        <i class="fa-solid fa-trash-can"></i> <span class="es-only">Eliminar publicación</span><span class="en-only">Delete listing</span>
+                                    <button onclick="solicitarEliminacion('${propId}')" class="flex-1 group bg-slate-800/60 hover:bg-red-600 border border-slate-700 hover:border-red-500 text-slate-300 hover:text-white font-bold py-2.5 rounded-xl text-xs md:text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:shadow-[0_0_16px_rgba(239,68,68,0.5)]">
+                                        <span class="w-6 h-6 rounded-full bg-red-500/20 group-hover:bg-white/20 flex items-center justify-center transition"><i class="fa-solid fa-trash-can text-red-400 group-hover:text-white text-[11px]"></i></span>
+                                        <span class="es-only">Eliminar</span><span class="en-only">Delete</span>
                                     </button>
                                 </div>
                             </div>
@@ -591,23 +595,24 @@
             const emailProp = prompt("Por favor, ingresa el correo electrónico registrado en esta propiedad para confirmar la eliminación:");
             if (!emailProp) return;
 
-            if (confirm('¿Estás seguro de solicitar la eliminación de esta publicación? Se enviará un enlace de confirmación a tu correo.')) {
-                try {
-                    const res = await fetch(WEBHOOK_URL_ACCIONES, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ accion: 'eliminar', propId: propId, email: emailProp })
-                    });
-                    
-                    if (res.ok) {
-                        alert('¡Solicitud enviada! Revisa tu correo electrónico para confirmar la eliminación.');
-                    } else {
-                        alert('Hubo un error al procesar la solicitud con el servidor.');
-                    }
-                } catch (e) {
-                    console.error(e);
-                    alert('Error de conexión.');
+            if (!confirm('Esta acción eliminará la publicación de forma definitiva y no se puede deshacer. ¿Desea continuar?')) return;
+
+            try {
+                const res = await fetch(WEBHOOK_URL_ELIMINAR, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ propId: propId, email: emailProp })
+                });
+
+                if (res.ok) {
+                    alert('Su inmueble ha sido eliminado exitosamente. Recibirá un correo de confirmación.');
+                    cargarPropiedades();
+                } else {
+                    alert('Hubo un error al procesar la eliminación. Por favor intente de nuevo.');
                 }
+            } catch (e) {
+                console.error(e);
+                alert('Error de conexión.');
             }
         }
 
