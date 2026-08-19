@@ -573,17 +573,20 @@
             const emailProp = prompt("Por favor, ingresa el correo electrónico registrado en esta propiedad para verificar tu identidad:");
             if (!emailProp) return;
 
+            if (!confirm('Su publicación actual será eliminada y será redirigido al formulario para volver a cargarla actualizada, sin costo. ¿Desea continuar?')) return;
+
             try {
-                const res = await fetch(WEBHOOK_URL_ACCIONES, {
+                const res = await fetch(WEBHOOK_URL_ELIMINAR, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accion: 'editar', propId: propId, email: emailProp })
+                    body: JSON.stringify({ propId: propId, email: emailProp })
                 });
-                
+
                 if (res.ok) {
-                    alert('¡Solicitud enviada! Revisa tu correo electrónico para obtener el enlace de modificación.');
+                    // Redirige directo al formulario de Tally, sin pasar por PayPal
+                    window.location.href = 'https://tally.so/r/rjQQ1X?origen_edicion=true&propId_anterior=' + encodeURIComponent(propId);
                 } else {
-                    alert('Hubo un error al procesar la solicitud con el servidor.');
+                    alert('Hubo un error al procesar la solicitud. Por favor intente de nuevo.');
                 }
             } catch (e) {
                 console.error(e);
