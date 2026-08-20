@@ -583,8 +583,35 @@
                 });
 
                 if (res.ok) {
-                    // Redirige directo al formulario de Tally, sin pasar por PayPal
-                    window.location.href = 'https://tally.so/r/rjQQ1X?origen_edicion=true&propId_anterior=' + encodeURIComponent(propId);
+                    // Busca la propiedad completa en los datos ya cargados
+                    const prop = propiedadesReales.find(p => p.id === propId);
+
+                    // Mapeo: nombre del Hidden Field en Tally (igual al label de la pregunta) -> campo real en Airtable
+                    const datosPrefill = {
+                        'Titulo de la publicacion': prop?.['Titulo'] || '',
+                        'Pais': prop?.['Pais'] || prop?.['País'] || '',
+                        'Ciudad': prop?.['Ciudad'] || '',
+                        'Sector': prop?.['Sector'] || '',
+                        'Tipo de Oferta': prop?.['Tipo de Oferta'] || '',
+                        'Precio de Venta': prop?.['Precio'] || '',
+                        'Tipo de Inmueble': prop?.['Tipo de Inmueble'] || '',
+                        'Numero de Habitaciones': prop?.['Habitaciones'] || '',
+                        'Numero de Baños': prop?.['Banos'] || '',
+                        'Descripcion del Inmueble': prop?.['Descripcion'] || '',
+                        'Contacto Nombre': prop?.['Contacto Nombre'] || '',
+                        'Email': prop?.['Email'] || '',
+                        'Whatsapp o Telefono': prop?.['WhatsApp o Telefono'] || '',
+                        'origen_edicion': 'true',
+                        'propId_anterior': propId
+                    };
+
+                    const params = new URLSearchParams();
+                    Object.entries(datosPrefill).forEach(([key, value]) => {
+                        if (value !== '') params.append(key, value);
+                    });
+
+                    // Redirige directo al formulario de Tally, ya pre-llenado, sin pasar por PayPal
+                    window.location.href = 'https://tally.so/r/rjQQ1X?' + params.toString();
                 } else {
                     alert('Hubo un error al procesar la solicitud. Por favor intente de nuevo.');
                 }
