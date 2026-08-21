@@ -352,6 +352,8 @@
         const WEBHOOK_URL_ACCIONES = 'https://hook.us2.make.com/tu2n6phqt888zlgei4bnegug2vdd4opm';
         // Webhook de eliminación directa (ejecuta el borrado al instante, sin correo intermedio)
         const WEBHOOK_URL_ELIMINAR = 'https://hook.us2.make.com/l4saj3bf7i44o7vlxac3kp8od278pglf';
+        // Webhook de SOLICITUD de eliminación (envía correo de confirmación, no ejecuta nada todavía)
+        const WEBHOOK_URL_SOLICITUD_ELIMINAR = 'https://hook.us2.make.com/rafuditssxx6bq3jxnw1ibb12osghoxq';
 
         // Formularios de Tally por idioma
         const TALLY_URL_ES = 'https://tally.so/r/rjQQ1X';
@@ -737,29 +739,23 @@
         async function solicitarEliminacion(propId) {
             const esES = idiomaActual === 'es';
 
-            const emailProp = prompt(esES
-                ? "Por favor, ingresa el correo electrónico registrado en esta propiedad para confirmar la eliminación:"
-                : "Please enter the email address registered on this property to confirm the deletion:");
-            if (!emailProp) return;
-
             const advertencia = esES
-                ? 'Esta acción eliminará su publicación de forma permanente e inmediata y no se puede deshacer. Si desea volver a publicar en el futuro, deberá pagar $3 USD nuevamente. ¿Desea continuar?'
-                : 'This action will permanently and immediately delete your listing and cannot be undone. If you wish to publish again in the future, you will need to pay $3 USD again. Do you want to continue?';
+                ? 'Se enviará un correo de confirmación al correo electrónico registrado en esta propiedad. La eliminación solo se ejecutará cuando confirme desde ese correo. ¿Desea continuar?'
+                : 'A confirmation email will be sent to the email address registered on this property. The deletion will only happen once you confirm from that email. Do you want to continue?';
 
             if (!confirm(advertencia)) return;
 
             try {
-                const res = await fetch(WEBHOOK_URL_ELIMINAR, {
+                const res = await fetch(WEBHOOK_URL_SOLICITUD_ELIMINAR, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ propId: propId, email: emailProp })
+                    body: JSON.stringify({ propId: propId })
                 });
 
                 if (res.ok) {
-                    alert(esES ? 'Su inmueble ha sido eliminado exitosamente. Recibirá un correo de confirmación.' : 'Your property has been deleted successfully. You will receive a confirmation email.');
-                    cargarPropiedades();
+                    alert(esES ? 'Hemos enviado un correo de confirmación al correo registrado en esta propiedad. Revíselo y haga clic en el botón para completar la eliminación.' : 'We have sent a confirmation email to the email address registered on this property. Please check it and click the button to complete the deletion.');
                 } else {
-                    alert(esES ? 'Hubo un error al procesar la eliminación. Por favor intente de nuevo.' : 'There was an error processing the deletion. Please try again.');
+                    alert(esES ? 'Hubo un error al procesar la solicitud. Por favor intente de nuevo.' : 'There was an error processing your request. Please try again.');
                 }
             } catch (e) {
                 console.error(e);
