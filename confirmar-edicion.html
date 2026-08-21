@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmar edición de inmueble - Stanzu</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .card {
+    background: #ffffff;
+    max-width: 480px;
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+  }
+  h2 { color: #3b82f6; margin-top: 0; }
+  p { color: #333; line-height: 1.5; }
+  button {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+  .msg { margin-top: 18px; font-size: 14px; }
+  .error { color: #ef4444; }
+  .success { color: #16a34a; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="stateDefault">
+    <h2 id="tituloCard">Confirmar edición de inmueble</h2>
+    <p id="descCard">Al confirmar, su publicación actual será eliminada y se abrirá el formulario con su información precargada. Debe enviarlo de inmediato o perderá los datos.</p>
+    <button id="confirmBtn">Sí, continuar con la edición</button>
+    <div id="msg" class="msg"></div>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const propId = params.get('propId');
+  const lang = params.get('lang') || 'es';
+  const esES = lang === 'es';
+
+  const btn = document.getElementById('confirmBtn');
+  const msg = document.getElementById('msg');
+
+  if (!esES) {
+    document.getElementById('tituloCard').textContent = 'Confirm property edit';
+    document.getElementById('descCard').textContent = 'Once confirmed, your current listing will be deleted and the form will open pre-filled with your information. You must submit it immediately or you will lose the data.';
+    btn.textContent = 'Yes, continue editing';
+  }
+
+  // Webhook de CONFIRMACIÓN de edición (borra el registro y devuelve los datos para prellenar Tally)
+  const WEBHOOK_URL = 'https://hook.us2.make.com/PENDIENTE_REEMPLAZAR_EDICION';
+
+  const TALLY_URL_ES = 'https://tally.so/r/rjQQ1X';
+  const TALLY_URL_EN = 'https://tally.so/r/2EgqYV';
+
+  const TRADUCCION_TIPO_INMUEBLE = {
+    'Apartamento': 'Apartament',
+    'Casa': 'House',
+    'Local': 'Commercial Space'
+  };
+
+  if (!propId) {
+    btn.disabled = true;
+    msg.textContent = esES ? 'Enlace inválido: falta el identificador del inmueble.' : 'Invalid link: missing property identifier.';
+    msg.className = 'msg error';
+  }
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    msg.textContent = esES ? 'Procesando...' : 'Processing...';
+    msg.className = 'msg';
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propId: propId })
+      });
+
+      if (!res.ok) throw new Error('Respuesta no exitosa');
+
+      const data = await res.json();
+
+      let tallyUrl;
+      const p = new URLSearchParams();
+
+      if (esES) {
+        tallyUrl = TALLY_URL_ES;
+        const campos = {
+          'Titulo de la publicacion': data.titulo,
+          'Pais': data.pais,
+          'Ciudad': data.ciudad,
+          'Sector': data.sector,
+          'Tipo de Oferta': data.tipoOferta,
+          'Precio de Venta': data.precio,
+          'Tipo de Inmueble': data.tipoInmueble,
+          'Numero de Habitaciones': data.habitaciones,
+          'Numero de Baños': data.banos,
+          'Descripcion del Inmueble': data.descripcion,
+          'Contacto Nombre': data.contactoNombre,
+          'Email': data.email,
+          'Whatsapp o Telefono': data.whatsapp,
+          'origen_edicion': 'true',
+          'propId_anterior': propId
+        };
+        Object.entries(campos).forEach(([k, v]) => { if (v) p.append(k, v); });
+      } else {
+        tallyUrl = TALLY_URL_EN;
+        const campos = {
+          'Listing Title': data.titulo,
+          'Country': data.pais,
+          'City': data.ciudad,
+          'Sector': data.sector,
+          'Offer Type': data.tipoOferta,
+          'Sale Price': data.precio,
+          'Property Type': TRADUCCION_TIPO_INMUEBLE[data.tipoInmueble] || data.tipoInmueble,
+          'Number of Bedrooms': data.habitaciones,
+          'Number of Bathrooms': data.banos,
+          'Property Description': data.descripcion,
+          'Contact Name': data.contactoNombre,
+          'Email': data.email,
+          'WhatsApp or Phone Number': data.whatsapp,
+          'origen_edicion': 'true',
+          'propId_anterior': propId
+        };
+        Object.entries(campos).forEach(([k, v]) => { if (v) p.append(k, v); });
+      }
+
+      msg.textContent = esES ? 'Redirigiendo al formulario...' : 'Redirecting to the form...';
+      msg.className = 'msg success';
+
+      window.location.href = tallyUrl + '?' + p.toString();
+
+    } catch (err) {
+      console.error(err);
+      msg.textContent = esES ? 'Ocurrió un error. Por favor intente de nuevo o contáctenos.' : 'An error occurred. Please try again or contact us.';
+      msg.className = 'msg error';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
